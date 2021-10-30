@@ -2,7 +2,6 @@ APScheduler==3.6.3
 cachetools==4.2.2
 certifi==2021.10.8
 charset-normalizer==2.0.7
-hibpwned==1.2.4
 idna==3.3
 pymongo==3.12.1
 python-telegram-bot==13.7
@@ -15,3 +14,5 @@ tornado==6.1
 tzdata==2021.5
 tzlocal==4.0.2
 urllib3==1.26.7
+boto3 == 1.19.7
+python-dotenv==0.19.1
