@@ -15,15 +15,15 @@
 # specific language governing permissions and limitations under the License.
 
 import boto3
+import yaml
 from boto3.dynamodb.conditions import Key, Attr
 
 class blabdynamo :
 	# variables - conf
-	with open ("../conf/config.yml") as ymlfile :
+	with open ("conf/config.yml") as ymlfile :
 		cfg = yaml.safe_load (ymlfile)
-	RESOURCE = cfg['dynamodb']['resource']
 	TABLE_CHAT = cfg['dynamodb']['table_chat']
-	dynamodb = boto3.resource (RESOURCE)
+	dynamodb = boto3.resource ('dynamodb',region_name='eu-west-3')
 	table = dynamodb.Table (TABLE_CHAT)
 
 	def save(self, item) :

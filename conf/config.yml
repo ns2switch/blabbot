@@ -3,5 +3,4 @@ date:
   short_format: '%Y.%m.%d %H:%M'
 
 dynamodb:
-  resource: 'blabdynamo'
   table_chat: 'chats'

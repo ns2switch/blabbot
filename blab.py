@@ -23,7 +23,6 @@ from include.telbot import botcomand
 from include.dynamo import blabdynamo
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 
-
 # Logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
