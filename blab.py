@@ -20,6 +20,7 @@ import logging
 import yaml
 from dotenv import load_dotenv
 from include.telbot import botcomand
+from include.dynamo import blabdynamo
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 
 

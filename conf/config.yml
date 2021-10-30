@@ -1,3 +1,7 @@
 date:
-   names: ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-   short_format: '%Y.%m.%d %H:%M'
+  names: [ 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun' ]
+  short_format: '%Y.%m.%d %H:%M'
+
+dynamodb:
+  resource: 'blabdynamo'
+  table_chat: 'chats'
