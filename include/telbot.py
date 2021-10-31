@@ -72,3 +72,6 @@ class botcomand :
 
 	def arsa(update: Update, _: CallbackContext) -> None :
 		update.message.reply_text ('Arsa!')
+
+	def help(update: Update, _: CallbackContext) -> None :
+		update.message.reply_text ('Usage: \n /help to see this text \n /start to begin')

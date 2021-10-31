@@ -45,6 +45,7 @@ def telegram() -> None :
     dispatcher = updater.dispatcher
     dispatcher.add_handler (CommandHandler ("start", botcomand.start))
     dispatcher.add_handler (CommandHandler ("arsa", botcomand.arsa))
+    dispatcher.add_handler (CommandHandler ("help", botcomand.help))
     dispatcher.add_handler (InlineQueryHandler (botcomand.inlinequery))
     updater.start_polling ()
     updater.idle ()

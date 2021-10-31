@@ -12,3 +12,4 @@ S3 to download the data and MySQL to storage the data.
 * v0.02 - Code clean - import includes
 * v0.03 - Add DynamoDB support
 * v0.04 - clean requirements
+* v0.05 - scrapy init
