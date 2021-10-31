@@ -13,22 +13,3 @@
 # under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
-from telethon import TelegramClient, events
-
-TOKEN=os.getenv('TELEGRAM_TOKEN')
-
-bot = TelegramClient('bot', 11111, 'a1b2c3d4').start(bot_token='TOKEN')
-
-@bot.on(events.NewMessage(pattern='/start'))
-async def start(event):
-    """Send a message when the command /start is issued."""
-    await event.respond('Hi!')
-    raise events.StopPropagation
-
-@bot.on(events.NewMessage)
-async def echo(event):
-    """Echo the user message."""
-    await event.respond(event.text)
-
-
-    bot.run_until_disconnected()

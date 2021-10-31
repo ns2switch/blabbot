@@ -21,7 +21,6 @@ import yaml
 from dotenv import load_dotenv
 from include.telbot import botcomand
 from include.dynamo import blabdynamo
-from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 
 # Logging
 logging.basicConfig(
@@ -37,18 +36,7 @@ load_dotenv()
 
 SHORT_TIME_FORMAT = cfg['date']['short_format']
 DAY_NAMES = cfg['date']['names']
-TOKEN=os.getenv('TELEGRAM_TOKEN')
 
-
-def telegram() -> None :
-    updater = Updater (TOKEN)
-    dispatcher = updater.dispatcher
-    dispatcher.add_handler (CommandHandler ("start", botcomand.start))
-    dispatcher.add_handler (CommandHandler ("arsa", botcomand.arsa))
-    dispatcher.add_handler (CommandHandler ("help", botcomand.help))
-    dispatcher.add_handler (InlineQueryHandler (botcomand.inlinequery))
-    updater.start_polling ()
-    updater.idle ()
 
 if __name__ == '__main__':
     telegram()
