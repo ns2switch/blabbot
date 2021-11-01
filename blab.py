@@ -18,7 +18,7 @@
 import os
 import logging
 import yaml
-from dotenv import load_dotenv
+from include.telclient import telclient
 from include.telbot import botcomand
 from include.dynamo import blabdynamo
 
@@ -40,5 +40,5 @@ DAY_NAMES = cfg['date']['names']
 
 if __name__ == '__main__':
     telegram()
-
+    telclient()
 
