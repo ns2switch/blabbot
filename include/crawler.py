@@ -13,3 +13,7 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 
+import requests
+from urllib.parse import urlparse, urljoin
+from bs4 import BeautifulSoup
+

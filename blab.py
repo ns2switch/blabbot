@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 #Copyright 2021 Anibal Cañada
 
@@ -19,7 +19,8 @@ import os
 import logging
 import yaml
 from include.telclient import telclient
-from include.telbot import botcomand
+from include.telbot import botcommand
+
 from include.dynamo import blabdynamo
 
 # Logging
@@ -39,6 +40,7 @@ DAY_NAMES = cfg['date']['names']
 
 
 if __name__ == '__main__':
-    telegram()
     telclient()
+    botcommand()
+
 
