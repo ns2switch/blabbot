@@ -19,8 +19,8 @@ import os
 import logging
 import yaml
 from include.telclient import telclient
-from include.telbot import botcommand
-
+#from include.telbot import botcommand
+import asyncio
 from include.dynamo import blabdynamo
 
 # Logging
@@ -33,14 +33,11 @@ logger = logging.getLogger(__name__)
 #variables - conf
 with open("conf/config.yml") as ymlfile:
     cfg = yaml.safe_load(ymlfile)
-load_dotenv()
 
 SHORT_TIME_FORMAT = cfg['date']['short_format']
 DAY_NAMES = cfg['date']['names']
 
 
+
 if __name__ == '__main__':
     telclient()
-    botcommand()
-
-

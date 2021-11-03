@@ -36,5 +36,3 @@ class botcommand():
         """Echo the user message."""
         await event.respond(event.text)
 
-    with bot:
-        bot.run_until_disconnected ()

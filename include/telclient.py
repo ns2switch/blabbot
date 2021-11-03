@@ -54,9 +54,10 @@ class telclient():
 		print (newMessage)
 		if newMessage == 'hola' :
 			await client.send_message (FullMessage.from_id, 'hola')
-		elif newMessage == 'hi':
+		elif newMessage == '/start':
 			await client.send_message (FullMessage.from_id, 'hi')
 		else :
 			await client.send_message (FullMessage.from_id, newMessage)
+
 	with client:
 		client.run_until_disconnected()
