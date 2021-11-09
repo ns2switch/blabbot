@@ -13,26 +13,43 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 import os
-from telethon import TelegramClient, events
 from dotenv import load_dotenv
-
+from telethon.tl.functions.messages import ImportChatInviteRequest
+from telethon.tl.functions.channels import JoinChannelRequest
+from telethon.tl.functions.channels import LeaveChannelRequest
 #VARIABLES
 load_dotenv()
 TOKEN=os.getenv('TELEGRAM_TOKEN')
 API_ID=os.getenv('API_ID')
 API_HASH=os.getenv('API_HASH')
 
-bot = TelegramClient('BlabBlabBot', API_ID, API_HASH).start(bot_token=TOKEN)
 
-class botcommand():
-    print('bot')
-    @bot.on(events.NewMessage(pattern='/start'))
-    async def start(event):
-        await event.respond('Hi!')
-        raise events.StopPropagation
+class botcommand:
 
-    @bot.on(events.NewMessage)
-    async def echo(event):
-        """Echo the user message."""
-        await event.respond(event.text)
+    def __init__ (self,events):
+        self.events = events
+        self.sender = sender
+        self.FullMessage =FullMessage
 
+    async def BotMode(FullMessage,sender,client):
+        await client.send_message (sender, 'Hola amo!')
+        if FullMessage.message == '/start':
+            await client.send_message (sender, 'Activado')
+        elif '/joinpriv' in FullMessage.message:
+            message = FullMessage.message.split()
+            hash = message[1]
+            chan = await client(ImportChatInviteRequest(hash))
+            print('Joining in ' + str(hash))
+            chaninfo = await client.get_input_entity (chan)
+            print(chaninfo)
+
+        elif '/joinpart' in FullMessage.message :
+            async for dialog in client.iter_dialogs () :
+                if dialog.id == chat_id :
+                    print(chat_id)
+                    await client.delete_dialog (chat_id)
+            print_msg_time (f'{channel[1]} has been leaved')
+
+        elif '/infochat' in FullMessage.message :
+            dialogs = await client.get_dialogs ()
+            print(dialogs)

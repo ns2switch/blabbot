@@ -19,11 +19,13 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from telethon import TelegramClient, events
+from .telbot  import *
 
 # VARIABLES
 load_dotenv ()
 API_ID = os.getenv ('API_ID')
 API_HASH = os.getenv ('API_HASH')
+ADMIN_ID = os.getenv('ADMIN_ID')
 client = TelegramClient ('Anonblab', API_ID, API_HASH)
 
 class telclient():
@@ -31,16 +33,7 @@ class telclient():
 	async def teldat() :
 		# Getting information about yourself
 		me = await client.get_me ()
-		# "me" is a user object. You can pretty-print
-		# any Telegram object with the "stringify" method:
 		print (me.stringify ())
-		message = await client.send_message (
-			'me',
-			'a [nice website](https://google.com)!',
-			link_preview=True
-		)
-		await message.reply ('Cool!')
-		# You can print the message history of any chat:
 		async for message in client.iter_messages ('me') :
 			print (message.id, message.text)
 
@@ -48,16 +41,21 @@ class telclient():
 	@client.on (events.NewMessage (outgoing=False))
 	async def incoming_message(event) :
 		newMessage = event.message.message
-		FullMessage = event.message
+		FullMessage = event.message # complete message
+		sender = event.sender_id
+		fullsender = await client.get_entity(sender)
+		senderstr = str(event.sender_id)
 		time = datetime.now ().strftime ("%d-%m-%Y %H:%M:%S")
-		print ("====================================== " + time)
+		print (str(fullsender.username) + "====== " + time )
 		print (newMessage)
-		if newMessage == 'hola' :
+		if senderstr == ADMIN_ID:
+			await botcommand.BotMode(FullMessage,event.sender_id,client)
+		elif newMessage == 'hola' :
 			await client.send_message (FullMessage.from_id, 'hola')
 		elif newMessage == '/start':
-			await client.send_message (FullMessage.from_id, 'hi')
+			await client.send_message (FullMessage.from_id, 'You are not an authorized user')
 		else :
-			await client.send_message (FullMessage.from_id, newMessage)
+			pass
 
 	with client:
 		client.run_until_disconnected()
