@@ -18,8 +18,10 @@
 import os
 from datetime import datetime
 from dotenv import load_dotenv
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events,types
 from .telbot  import *
+from .dynamo import blabdynamo
+from .helpers import date_format, to_json
 
 # VARIABLES
 load_dotenv ()
@@ -39,23 +41,35 @@ class telclient():
 
 
 	@client.on (events.NewMessage (outgoing=False))
+
 	async def incoming_message(event) :
+		dyn = blabdynamo()
 		newMessage = event.message.message
 		FullMessage = event.message # complete message
 		sender = event.sender_id
-		fullsender = await client.get_entity(sender)
-		senderstr = str(event.sender_id)
-		time = datetime.now ().strftime ("%d-%m-%Y %H:%M:%S")
-		print (str(fullsender.username) + "====== " + time )
-		print (newMessage)
-		if senderstr == ADMIN_ID:
-			await botcommand.BotMode(FullMessage,event.sender_id,client)
-		elif newMessage == 'hola' :
-			await client.send_message (FullMessage.from_id, 'hola')
-		elif newMessage == '/start':
-			await client.send_message (FullMessage.from_id, 'You are not an authorized user')
-		else :
-			pass
+		fullsender = await client.get_entity (sender)
+		senderstr = str (event.sender_id)
+		time = date_format(datetime.now())
+		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)):
+			channel = FullMessage.peer_id
+			fullchan = await client.get_entity (channel)
+			print(to_json(FullMessage))
+			dyn.save(to_json(FullMessage))
+			print ("user: " + str (fullsender.username) + " Channel: " + str(fullchan.title) + " time: " + str(time))
+			print(FullMessage.message)
+			if FullMessage.mentioned:
+				await client.send_message(channel, "I am away.Let your message, when listen 'Beep'")
+		else:
+			print ("user: " + str(fullsender.username) + " at " + str(time))
+			print (newMessage)
+			if senderstr == ADMIN_ID:
+				await botcommand.BotMode(FullMessage,event.sender_id,client)
+			elif newMessage == 'hi' :
+				await client.send_message (FullMessage.peer_id, 'hi')
+			elif newMessage == '/start':
+				await client.send_message (FullMessage.from_id, 'You are not an authorized user')
+			else :
+				pass
 
 	with client:
 		client.run_until_disconnected()

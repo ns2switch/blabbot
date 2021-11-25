@@ -17,6 +17,8 @@ from dotenv import load_dotenv
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.functions.channels import LeaveChannelRequest
+from telethon.tl.functions.users import GetFullUserRequest
+
 #VARIABLES
 load_dotenv()
 TOKEN=os.getenv('TELEGRAM_TOKEN')
@@ -29,12 +31,20 @@ class botcommand:
     def __init__ (self,events):
         self.events = events
         self.sender = sender
-        self.FullMessage =FullMessage
+        self.FullMessage = FullMessage
 
     async def BotMode(FullMessage,sender,client):
-        await client.send_message (sender, 'Hola amo!')
+        #await client.send_message (sender, 'Hola amo!')
         if FullMessage.message == '/start':
             await client.send_message (sender, 'Activado')
+
+        elif '/infouser' in FullMessage.message:
+            message = FullMessage.message.split ()
+            user = message[1]
+            full = await client (GetFullUserRequest (user))
+            bio = full
+            print(bio)
+
         elif '/joinpriv' in FullMessage.message:
             message = FullMessage.message.split()
             hash = message[1]

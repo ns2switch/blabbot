@@ -13,21 +13,22 @@
 # under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
-
+import os
 import boto3
-import yaml
+from dotenv import load_dotenv
 from boto3.dynamodb.conditions import Key, Attr
+from .helpers import date_format
+load_dotenv()
+TABLE_CHAT=os.getenv('TABLE_CHAT')
 
 class blabdynamo :
+	def __init__(self) :
+		self.dynamodb = boto3.resource ('dynamodb',region_name='eu-west-1')
+		self.table = self.dynamodb.Table (TABLE_CHAT)
 	# variables - conf
-	with open ("conf/config.yml") as ymlfile :
-		cfg = yaml.safe_load (ymlfile)
-	TABLE_CHAT = cfg['dynamodb']['table_chat']
-	dynamodb = boto3.resource ('dynamodb',region_name='eu-west-3')
-	table = dynamodb.Table (TABLE_CHAT)
 
-	def save(self, item) :
-		self.table.put_item (item)
+	def save(self, data) :
+		self.table.put_item (Item=data)
 
 	def get(self, key) :
 		response = self.table.get_item (key)
