@@ -48,10 +48,16 @@ class botcommand:
         elif '/joinpriv' in FullMessage.message:
             message = FullMessage.message.split()
             hash = message[1]
+            hash = hash.replace("https://t.me/+","")
             chan = await client(ImportChatInviteRequest(hash))
-            print('Joining in ' + str(hash))
-            chaninfo = await client.get_input_entity (chan)
+            chaninfo = chan.to_dict()
             print(chaninfo)
+            print(chaninfo['chats']['title'])
+            print(chaninfo['chats']['id'])
+            print(chaninfo['chats']['participants_count'])
+            print(chaninfo['chats']['date'])
+            #print('Joining in ' + str(hash))
+            #print(chaninfo)
 
         elif '/joinpart' in FullMessage.message :
             async for dialog in client.iter_dialogs () :

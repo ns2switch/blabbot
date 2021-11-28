@@ -21,7 +21,7 @@ from dotenv import load_dotenv
 from telethon import TelegramClient, events,types
 from .telbot  import *
 from .dynamo import blabdynamo
-from .helpers import date_format, to_json
+from .helpers import date_format, channel_to_dynamo, user_to_dynamo
 
 # VARIABLES
 load_dotenv ()
@@ -53,15 +53,14 @@ class telclient():
 		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)):
 			channel = FullMessage.peer_id
 			fullchan = await client.get_entity (channel)
-			print(to_json(FullMessage))
-			dyn.save(to_json(FullMessage))
-			print ("user: " + str (fullsender.username) + " Channel: " + str(fullchan.title) + " time: " + str(time))
-			print(FullMessage.message)
+			dyn.save(channel_to_dynamo(FullMessage,fullchan.title,fullsender.username))
+			#print ("user: " + str (fullsender.username) + " Channel: " + str(fullchan.title) + " time: " + str(time))
+			#print(FullMessage.message)
 			if FullMessage.mentioned:
 				await client.send_message(channel, "I am away.Let your message, when listen 'Beep'")
 		else:
-			print ("user: " + str(fullsender.username) + " at " + str(time))
-			print (newMessage)
+			#print ("user: " + str(fullsender.username) + " at " + str(time))
+			#print (newMessage)
 			if senderstr == ADMIN_ID:
 				await botcommand.BotMode(FullMessage,event.sender_id,client)
 			elif newMessage == 'hi' :
@@ -69,7 +68,7 @@ class telclient():
 			elif newMessage == '/start':
 				await client.send_message (FullMessage.from_id, 'You are not an authorized user')
 			else :
-				pass
+				dyn.save (user_to_dynamo (FullMessage, fullsender.username))
 
 	with client:
 		client.run_until_disconnected()
