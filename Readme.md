@@ -20,3 +20,5 @@ S3 to download the data and MySQL to storage the data.
 * v0.12 - adding get and search to dynamodb
 * v0.13 - moving to docker
 * v0.14 - adding redis
+* v0.15 - minor sync changes
+* v0.16 - redis cluster
