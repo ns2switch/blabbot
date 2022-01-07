@@ -34,7 +34,7 @@ class botcommand:
         self.sender = sender
         self.FullMessage = FullMessage
 
-    async def BotMode(FullMessage,sender,client):
+    async def BotMode(self,FullMessage,sender,client):
         dyn = blabdynamo ()
         #await client.send_message (sender, 'Hola amo!')
         if FullMessage.message == '/start':
@@ -49,9 +49,9 @@ class botcommand:
 
         elif '/joinpriv' in FullMessage.message:
             message = FullMessage.message.split()
-            hash = message[1]
-            hash = hash.replace("https://t.me/+","")
-            chan = await client(ImportChatInviteRequest(hash))
+            hashed = message[1]
+            hashed = hashed.replace("https://t.me/+","")
+            chan = await client(ImportChatInviteRequest(hashed))
             chaninfo = chan.to_dict()
             print(chaninfo)
             print(chaninfo['chats']['title'])

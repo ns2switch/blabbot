@@ -22,3 +22,4 @@ S3 to download the data and MySQL to storage the data.
 * v0.14 - adding redis
 * v0.15 - minor sync changes
 * v0.16 - redis cluster
+* v0.17 - minor code revision and changes.

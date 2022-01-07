@@ -32,7 +32,7 @@ client = TelegramClient ('Anonblab', API_ID, API_HASH)
 
 class telclient():
 	print('client')
-	async def teldat() :
+	async def teldat(self) :
 		# Getting information about yourself
 		me = await client.get_me ()
 		print (me.stringify ())
@@ -42,14 +42,14 @@ class telclient():
 
 	@client.on (events.NewMessage (outgoing=False))
 
-	async def incoming_message(event) :
+	async def incoming_message(self,event) :
 		dyn = blabdynamo()
 		newMessage = event.message.message
 		FullMessage = event.message # complete message
 		sender = event.sender_id
 		fullsender = await client.get_entity (sender)
 		senderstr = str (event.sender_id)
-		time = date_format(datetime.now())
+		#time = date_format(datetime.now())
 		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)):
 			channel = FullMessage.peer_id
 			fullchan = await client.get_entity (channel)
