@@ -19,7 +19,14 @@ S3 to download the data and MySQL to storage the data.
 * v0.11 - improving messages to dynamodb
 * v0.12 - adding get and search to dynamodb
 * v0.13 - moving to docker
+* v0.06 - migrating to telethon
+* v0.09 - adding bot commands
+* v0.10 - logging to dynamodb
+* v0.11 - improving messages to dynamodb
+* v0.12 - adding get and search to dynamodb
+* v0.13 - moving to docker
 * v0.14 - adding redis
 * v0.15 - minor sync changes
 * v0.16 - redis cluster
 * v0.17 - minor code revision and changes.
+* v0.18 - version bumping and rds first commit

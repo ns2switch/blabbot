@@ -16,10 +16,9 @@
 # specific language governing permissions and limitations under the License.
 
 import os
-from datetime import datetime
 from dotenv import load_dotenv
-from telethon import TelegramClient, events,types
-from .telbot  import *
+from telethon import TelegramClient, events, types
+from .telbot import *
 from .dynamo import blabdynamo
 from .helpers import date_format, channel_to_dynamo, user_to_dynamo
 
@@ -27,11 +26,13 @@ from .helpers import date_format, channel_to_dynamo, user_to_dynamo
 load_dotenv ()
 API_ID = os.getenv ('API_ID')
 API_HASH = os.getenv ('API_HASH')
-ADMIN_ID = os.getenv('ADMIN_ID')
+ADMIN_ID = os.getenv ('ADMIN_ID')
 client = TelegramClient ('Anonblab', API_ID, API_HASH)
 
-class telclient():
-	print('client')
+
+class telclient () :
+	print ('Connected')
+
 	async def teldat(self) :
 		# Getting information about yourself
 		me = await client.get_me ()
@@ -39,36 +40,34 @@ class telclient():
 		async for message in client.iter_messages ('me') :
 			print (message.id, message.text)
 
-
 	@client.on (events.NewMessage (outgoing=False))
-
-	async def incoming_message(self,event) :
-		dyn = blabdynamo()
+	async def incoming_message(event) :
+		dyn = blabdynamo ()
 		newMessage = event.message.message
-		FullMessage = event.message # complete message
+		FullMessage = event.message  # complete message
 		sender = event.sender_id
 		fullsender = await client.get_entity (sender)
 		senderstr = str (event.sender_id)
-		#time = date_format(datetime.now())
-		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)):
+		# time = date_format(datetime.now())
+		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)) :
 			channel = FullMessage.peer_id
 			fullchan = await client.get_entity (channel)
-			dyn.save(channel_to_dynamo(FullMessage,fullchan.title,fullsender.username))
-			#print ("user: " + str (fullsender.username) + " Channel: " + str(fullchan.title) + " time: " + str(time))
-			#print(FullMessage.message)
-			if FullMessage.mentioned:
-				await client.send_message(channel, "I am away.Let your message, when listen 'Beep'")
-		else:
-			#print ("user: " + str(fullsender.username) + " at " + str(time))
-			#print (newMessage)
-			if senderstr == ADMIN_ID:
-				await botcommand.BotMode(FullMessage,event.sender_id,client)
+			dyn.save (channel_to_dynamo (FullMessage, fullchan.title, fullsender.username))
+			# print ("user: " + str (fullsender.username) + " Channel: " + str(fullchan.title) + " time: " + str(time))
+			# print(FullMessage.message)
+			if FullMessage.mentioned :
+				await client.send_message (channel, "I am away.Let your message, when listen 'Beep'")
+		else :
+			# print ("user: " + str(fullsender.username) + " at " + str(time))
+			# print (newMessage)
+			if senderstr == ADMIN_ID :
+				await botcommand.BotMode (FullMessage, event.sender_id, client)
 			elif newMessage == 'hi' :
 				await client.send_message (FullMessage.peer_id, 'hi')
-			elif newMessage == '/start':
+			elif newMessage == '/start' :
 				await client.send_message (FullMessage.from_id, 'You are not an authorized user')
 			else :
 				dyn.save (user_to_dynamo (FullMessage, fullsender.username))
 
-	with client:
-		client.run_until_disconnected()
+	with client :
+		client.run_until_disconnected ()
