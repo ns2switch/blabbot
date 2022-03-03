@@ -53,13 +53,10 @@ class telclient () :
 			channel = FullMessage.peer_id
 			fullchan = await client.get_entity (channel)
 			dyn.save (channel_to_dynamo (FullMessage, fullchan.title, fullsender.username))
-			# print ("user: " + str (fullsender.username) + " Channel: " + str(fullchan.title) + " time: " + str(time))
-			# print(FullMessage.message)
 			if FullMessage.mentioned :
 				await client.send_message (channel, "I am away.Let your message, when listen 'Beep'")
 		else :
-			# print ("user: " + str(fullsender.username) + " at " + str(time))
-			# print (newMessage)
+
 			if senderstr == ADMIN_ID :
 				await botcommand.BotMode (FullMessage, event.sender_id, client)
 			elif newMessage == 'hi' :

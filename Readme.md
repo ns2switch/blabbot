@@ -1,6 +1,6 @@
 # Blab Bot
 
-### Telegram data crawler
+### Telegram malware crawler
 
 Requirements:
 It uses dynamoDB for telegram message storage , 
@@ -30,3 +30,4 @@ S3 to download the data and MySQL to storage the data.
 * v0.16 - redis cluster
 * v0.17 - minor code revision and changes.
 * v0.18 - version bumping and rds first commit
+* v0.19 - list files from channels , and locate channels

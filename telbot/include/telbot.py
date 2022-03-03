@@ -13,14 +13,15 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 import os
+from pprint import pprint
 from dotenv import load_dotenv
-from .dynamo import blabdynamo
-from telethon.tl.functions.messages import ImportChatInviteRequest
-from telethon.tl.functions.channels import JoinChannelRequest
-from telethon.tl.functions.channels import LeaveChannelRequest
+from telethon.tl.functions.messages import ImportChatInviteRequest, GetHistoryRequest
 from telethon.tl.functions.users import GetFullUserRequest
 
+from .dynamo import blabdynamo
+
 # VARIABLES
+
 load_dotenv ()
 TOKEN = os.getenv ('TELEGRAM_TOKEN')
 API_ID = os.getenv ('API_ID')
@@ -68,9 +69,32 @@ class botcommand :
 					await client.delete_dialog (chat_id)
 			print_msg_time (f'{channel[1]} has been leaved')
 
-		elif '/infochat' in FullMessage.message :
-			dialogs = await client.get_dialogs ()
-			print (dialogs)
+		elif '/getmedia' in FullMessage.message :
+			message = FullMessage.message.split ()
+			channame = message[1]
+			limited = int (message[2])
+			channel = await client.get_entity (channame)
+			mime = ['application/pdf','application/vnd.android.package-archive','application/zip','application/rar']
+			'''getmessages = await client.get_messages(channel, limit= limited)'''
+			async for message in client.iter_messages (channel,limit=limited) :
+				if message.media:
+					if message.file:
+						for tipos in mime:
+							if tipos in message.file.mime_type :
+								fileinfo = str(message.file.name) + "-" + str(message.file.mime_type)+"-"+ str(message.file.size)+'in bytes'
+								await client.send_message(sender,fileinfo )
+
+		elif '/whichchan' in FullMessage.message:
+			message = FullMessage.message.split ()
+			async for dialog in client.iter_dialogs () :
+				if dialog.is_channel :
+					await client.send_message (sender, dialog.name)
+
+		elif '/infochan' in FullMessage.message :
+			message = FullMessage.message.split ()
+			channame = message[1]
+			channel = await client.get_entity (channame)
+			await client.send_message (sender, channel.stringify())
 
 		elif '/getdb' in FullMessage.message :
 			answer = ''

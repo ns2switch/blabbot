@@ -31,3 +31,4 @@ def log_to_dynamo(data,user):
                  'message' : data_dict['message'], 'user' : str (user), 'media' : data_dict['media'],
                  'from_id' : data_dict['from_id']}
     return chan_dict
+
