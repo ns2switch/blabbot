@@ -1,5 +1,10 @@
+import os
 from datetime import datetime, date
+from .virustotal.vt import vtotal
+from .storage.storage import s3bucket
 
+from dotenv import load_dotenv
+BUCKET_NAME = os.getenv('BUCKET_NAME')
 
 def date_format(data):
     if isinstance (data, (datetime, date)) :
@@ -31,4 +36,17 @@ def log_to_dynamo(data,user):
                  'message' : data_dict['message'], 'user' : str (user), 'media' : data_dict['media'],
                  'from_id' : data_dict['from_id']}
     return chan_dict
+
+def analyze_and_upload(filename):
+    data = vtotal(filename)
+    infofile = data.get_hash_info()
+    datajson = str(filename) + '.json'
+    with open(datajson,'w') as filej:
+        filej.write(str(infofile))
+    fsize = os.path.getsize(filename)
+    fjsize = os.path.getsize(datajson)
+    s3_datos = s3bucket(filename)
+    s3_datos.upload_file()
+    s3_analysis = s3bucket(datajson)
+    s3_analysis.upload_file()
 

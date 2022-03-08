@@ -17,7 +17,7 @@ import os
 import logging
 import yaml
 from include.telclient import telclient
-from include.dynamo import blabdynamo
+
 
 # Logging
 logging.basicConfig(

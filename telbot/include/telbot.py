@@ -17,7 +17,7 @@ from pprint import pprint
 from dotenv import load_dotenv
 from telethon.tl.functions.messages import ImportChatInviteRequest, GetHistoryRequest
 from telethon.tl.functions.users import GetFullUserRequest
-
+from .helpers import analyze_and_upload
 from .dynamo import blabdynamo
 
 # VARIABLES
@@ -59,8 +59,7 @@ class botcommand :
 			print (chaninfo['chats']['id'])
 			print (chaninfo['chats']['participants_count'])
 			print (chaninfo['chats']['date'])
-		# print('Joining in ' + str(hash))
-		# print(chaninfo)
+
 
 		elif '/joinpart' in FullMessage.message :
 			async for dialog in client.iter_dialogs () :
@@ -81,14 +80,25 @@ class botcommand :
 					if message.file:
 						for tipos in mime:
 							if tipos in message.file.mime_type :
-								fileinfo = str(message.file.name) + "-" + str(message.file.mime_type)+"-"+ str(message.file.size)+'in bytes'
+								fileinfo = str(message.file.name) + " - " + str(message.file.mime_type)+" - "+ str(message.file.size)+' in bytes'
 								await client.send_message(sender,fileinfo )
+								await client.send_message(sender,'downloading....')
+								path = await client.download_media (message.media, "../tmp")
+								analyze_and_upload(path)
+								await client.send_message (sender, 'analyzed and uploaded to S3')
+				#else:
+				#	await client.send_message (sender, 'no files found')
+
+
 
 		elif '/whichchan' in FullMessage.message:
 			message = FullMessage.message.split ()
 			async for dialog in client.iter_dialogs () :
 				if dialog.is_channel :
-					await client.send_message (sender, dialog.name)
+					dialog_total = str(dialog.entity.title) + ' - ' + str(dialog.entity.username)
+					await client.send_message('Currently monitoring: ')
+					await client.send_message (sender, dialog_total)
+
 
 		elif '/infochan' in FullMessage.message :
 			message = FullMessage.message.split ()
