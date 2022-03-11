@@ -13,11 +13,13 @@
 # CONDITIONS OF ANY KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations under the License.
 import os
+import json
 from pprint import pprint
 from dotenv import load_dotenv
 from telethon.tl.functions.messages import ImportChatInviteRequest, GetHistoryRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from .helpers import analyze_and_upload
+from .storage.storage import s3bucket
 from .dynamo import blabdynamo
 
 # VARIABLES
@@ -26,7 +28,7 @@ load_dotenv ()
 TOKEN = os.getenv ('TELEGRAM_TOKEN')
 API_ID = os.getenv ('API_ID')
 API_HASH = os.getenv ('API_HASH')
-
+MIME_TYPES = json.loads(os.getenv('MIME_TYPES'))
 
 class botcommand :
 
@@ -73,19 +75,22 @@ class botcommand :
 			channame = message[1]
 			limited = int (message[2])
 			channel = await client.get_entity (channame)
-			mime = ['application/pdf','application/vnd.android.package-archive','application/zip','application/rar']
+			mime = MIME_TYPES
+			data = s3bucket ()
+			prev_files = data.get_all_list_files ()
 			'''getmessages = await client.get_messages(channel, limit= limited)'''
-			async for message in client.iter_messages (channel,limit=limited) :
-				if message.media:
-					if message.file:
-						for tipos in mime:
-							if tipos in message.file.mime_type :
-								fileinfo = str(message.file.name) + " - " + str(message.file.mime_type)+" - "+ str(message.file.size)+' in bytes'
-								await client.send_message(sender,fileinfo )
-								await client.send_message(sender,'downloading....')
-								path = await client.download_media (message.media, "../tmp")
-								analyze_and_upload(path)
-								await client.send_message (sender, 'analyzed and uploaded to S3')
+			for tipos in mime:
+				async for message in client.iter_messages (channel,limit=limited) :
+					if message.media:
+						if message.file:
+							if message.file.name not in prev_files:
+								if tipos in message.file.mime_type :
+									fileinfo = str(message.file.name) + " - " + str(message.file.mime_type)+" - "+ str(message.file.size)+' in bytes'
+									await client.send_message(sender,fileinfo )
+									await client.send_message(sender,'downloading....')
+									path = await client.download_media (message.media, "../tmp")
+									analyze_and_upload(path)
+									await client.send_message (sender, 'analyzed and uploaded to S3')
 				#else:
 				#	await client.send_message (sender, 'no files found')
 
@@ -93,10 +98,10 @@ class botcommand :
 
 		elif '/whichchan' in FullMessage.message:
 			message = FullMessage.message.split ()
+			await client.send_message (sender, 'Currently monitoring: ')
 			async for dialog in client.iter_dialogs () :
 				if dialog.is_channel :
 					dialog_total = str(dialog.entity.title) + ' - ' + str(dialog.entity.username)
-					await client.send_message('Currently monitoring: ')
 					await client.send_message (sender, dialog_total)
 
 
@@ -128,3 +133,11 @@ class botcommand :
 						url += element['media']['webpage']['url']
 						url += "\n"
 			await client.send_message (sender, url)
+
+		elif '/allfiles' in FullMessage.message :
+			message = FullMessage.message.split ()
+			'''channame = message[1]'''
+			data = s3bucket()
+			filesdata = data.get_all_list_files()
+			for filesx in filesdata:
+				await client.send_message (sender, filesx)

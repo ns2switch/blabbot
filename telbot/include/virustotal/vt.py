@@ -21,8 +21,11 @@ class vtotal(object):
 				sha256_hash.update (byte_block)
 		filehash = sha256_hash.hexdigest ()
 		vt_files = virustotal3.core.Files (API_KEY)
-		info = vt_files.info_file(filehash)
-		return info
+		try:
+			info = vt_files.info_file(filehash)
+			return info
+		except:
+			return "Not present in virustotal - hash: " + str(filehash)
 
 	def get_file_analysis(self):
 		response = vt.upload(filename)

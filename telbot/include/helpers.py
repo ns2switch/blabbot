@@ -43,10 +43,8 @@ def analyze_and_upload(filename):
     datajson = str(filename) + '.json'
     with open(datajson,'w') as filej:
         filej.write(str(infofile))
-    fsize = os.path.getsize(filename)
-    fjsize = os.path.getsize(datajson)
-    s3_datos = s3bucket(filename)
-    s3_datos.upload_file()
-    s3_analysis = s3bucket(datajson)
-    s3_analysis.upload_file()
+    s3_datos = s3bucket()
+    s3_datos.upload_file(filename)
+    s3_info = s3bucket()
+    s3_info.upload_file(datajson)
 
