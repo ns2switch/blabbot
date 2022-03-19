@@ -18,7 +18,7 @@
 import os
 from dotenv import load_dotenv
 from telethon import TelegramClient, events, types
-from .telbot import *
+from .telbot import botcommand
 from .dynamo import blabdynamo
 from .helpers import date_format, channel_to_dynamo, user_to_dynamo
 
