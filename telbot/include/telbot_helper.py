@@ -4,7 +4,9 @@ import json
 from dotenv import load_dotenv
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.functions.users import GetFullUserRequest
+from .helpers import analyze_and_upload
 from .storage.storage import s3bucket
+
 
 
 load_dotenv ()
@@ -16,6 +18,7 @@ MIME_TYPES = json.loads(os.getenv('MIME_TYPES'))
 async def help_commands(FullMessage,sender,client):
 	message = "Todos los comandos llevan una / delante " + '\n'
 	comandos = '/infouser + user - Imprime informacion sobre el usuario' + '\n'
+	comandos += '/whichchan - Informacion de los canales monitorizados' + '\n'
 	comandos += '/joinpriv + url_del_canal - Accede al canal' + '\n'
 	comandos += '/part - Abandona el canal actual'+ '\n'
 	comandos += '/getmedia canal cantidad - Descarga , analiza y sube al S3 bucket los archivos del canal' + '\n'
@@ -113,8 +116,9 @@ async def getmedia_from_chan(FullMessage,sender,client):
 							fileinfo = str (message.file.name) + " - " + str (message.file.mime_type) + " - " + str (
 								message.file.size) + ' in bytes'
 							await client.send_message (sender, fileinfo)
-							await client.send_message (sender, 'downloading....')
+							await client.send_message (sender, 'Analyzing....')
 							path = await client.download_media (message.media, "../tmp")
-							analyze_and_upload (path)
+							file_info = analyze_and_upload (path)
 							await client.send_message (sender, 'analyzed and uploaded to S3')
-
+							await client.send_message(sender,'hash: ' + str(file_info))
+							await client.send_message (sender, 'Virustotal link: '+ 'https://www.virustotal.com/gui/file/' + str (file_info))

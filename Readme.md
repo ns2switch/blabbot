@@ -32,4 +32,6 @@ S3 to download the data and MySQL to storage the data.
 * v0.18 - version bumping and rds first commit
 * v0.19 - list files from channels , and locate channels
 * v0.20 - add S3 and virustotal API
-* v.0.21 Improve S3 and virustotal integration
+* v0.21 - Improve S3 and virustotal integration
+* v0.22 - code cleanup
+* v0.23 - improve virustotal integration

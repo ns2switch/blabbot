@@ -47,4 +47,5 @@ def analyze_and_upload(filename):
     s3_datos.upload_file(filename)
     s3_info = s3bucket()
     s3_info.upload_file(datajson)
+    return data.hash
 
