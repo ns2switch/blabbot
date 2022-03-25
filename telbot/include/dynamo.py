@@ -19,12 +19,12 @@ import boto3
 from dotenv import load_dotenv
 from boto3.dynamodb.conditions import Key, Attr
 load_dotenv()
-TABLE_CHAT=os.getenv('TABLE_CHAT')
 
-class blabdynamo :
-	def __init__(self) :
+
+class blabdynamo(object) :
+	def __init__(self,table) :
 		self.dynamodb = boto3.resource ('dynamodb',region_name='eu-west-1')
-		self.table = self.dynamodb.Table (TABLE_CHAT)
+		self.table = self.dynamodb.Table (table)
 	# variables - conf
 
 	def save(self, data) :

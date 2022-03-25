@@ -27,6 +27,7 @@ load_dotenv ()
 API_ID = os.getenv ('API_ID')
 API_HASH = os.getenv ('API_HASH')
 ADMIN_ID = os.getenv ('ADMIN_ID')
+TABLE_CHAT=os.getenv('TABLE_CHAT')
 client = TelegramClient ('Anonblab', API_ID, API_HASH)
 
 
@@ -42,16 +43,16 @@ class telclient () :
 
 	@client.on (events.NewMessage (outgoing=False))
 	async def incoming_message(event) :
-		dyn = blabdynamo ()
+		dyn = blabdynamo (TABLE_CHAT)
 		newMessage = event.message.message
 		FullMessage = event.message  # complete message
 		sender = event.sender_id
 		fullsender = await client.get_entity (sender)
 		senderstr = str (event.sender_id)
-		# time = date_format(datetime.now())
 		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)) :
 			channel = FullMessage.peer_id
 			fullchan = await client.get_entity (channel)
+			print(FullMessage)
 			dyn.save (channel_to_dynamo (FullMessage, fullchan.title, fullsender.username))
 			if FullMessage.mentioned :
 				await client.send_message (channel, "I am away.Let your message, when listen 'Beep'")

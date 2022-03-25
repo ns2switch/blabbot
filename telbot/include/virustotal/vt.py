@@ -7,47 +7,48 @@ from dotenv import load_dotenv
 
 
 load_dotenv ()
-API_KEY = os.getenv('VT_API')
-vt = virustotal3.core.Files(API_KEY)
+API_KEY = os.getenv ('VT_API')
+vt = virustotal3.core.Files (API_KEY)
 
 
-class vtotal(object):
-	def __init__(self,filename) :
+def inform_file(filehash) :
+	hash = vt.info_file (filehash, timeout=30)
+	return hash
+
+class vtotal (object) :
+	def __init__(self, filename) :
 		self.filename = filename
 		self.hash = 0
 
-	def get_hash_info(self):
+	def get_hash_info(self) :
 		sha256_hash = hashlib.sha256 ()
 		with open (self.filename, "rb") as f :
 			for byte_block in iter (lambda : f.read (65536), b"") :
 				sha256_hash.update (byte_block)
 		self.hash = sha256_hash.hexdigest ()
 		vt_files = virustotal3.core.Files (API_KEY)
-		try:
-			info = vt_files.info_file(self.hash)
+		try :
+			info = vt_files.info_file (self.hash)
 			return info
-		except:
-			print("Analyzing")
-			analyzed = self.get_file_analysis()
-			#return "Not present in virustotal - hash: " + str(filehash)
+		except :
+			print ("Analyzing")
+			analyzed = self.get_file_analysis ()
 			return analyzed
 
-	def get_file_analysis(self):
-		response = vt.upload(self.filename)
+	def get_file_analysis(self) :
+		response = vt.upload (self.filename)
 		analysis_id = response['data']['id']
-		print('Analysis ID: {}'.format(analysis_id))
-		results = virustotal3.core.get_analysis(API_KEY, analysis_id)
+		print ('Analysis ID: {}'.format (analysis_id))
+		results = virustotal3.core.get_analysis (API_KEY, analysis_id)
 		status = results['data']['attributes']['status']
-		print('Waiting for results...')
-		while 'completed' not in status:
-			results = virustotal3.core.get_analysis(API_KEY, analysis_id)
+		print ('Waiting for results...')
+		while 'completed' not in status :
+			results = virustotal3.core.get_analysis (API_KEY, analysis_id)
 			status = results['data']['attributes']['status']
-			print('Current status: {}'.format(status))
-			time.sleep(10)
-		results = virustotal3.core.get_analysis(API_KEY, analysis_id)
-		print (json.dumps (results, indent=4, sort_keys=True))
+			print ('Current status: {}'.format (status))
+			time.sleep (10)
+		results = virustotal3.core.get_analysis (API_KEY, analysis_id)
+		#print (json.dumps (results, indent=4, sort_keys=True))
 		return results
 
-	def inform_file(self):
-		hash = vt.info_file(self.hash,timeout=30)
-		return hash
+

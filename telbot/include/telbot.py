@@ -23,7 +23,7 @@ class botcommand :
 		self.FullMessage = FullMessage
 
 	async def BotMode(FullMessage, sender, client) :
-		dyn = blabdynamo ()
+		dyn = blabdynamo (TABLE_CHAT)
 		# await client.send_message (sender, 'Hola amo!')
 
 		if FullMessage.message == '/start' :
@@ -58,3 +58,6 @@ class botcommand :
 
 		elif '/allfiles' in FullMessage.message :
 			await list_all_files_in_s3(FullMessage,sender,client)
+
+		elif '/filehash' in FullMessage.message :
+			await file_info_hash(FullMessage,sender,client)

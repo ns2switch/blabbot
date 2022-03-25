@@ -4,6 +4,8 @@ import json
 from dotenv import load_dotenv
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.functions.users import GetFullUserRequest
+from .virustotal.vt import inform_file
+from .dynamo import blabdynamo
 from .helpers import analyze_and_upload
 from .storage.storage import s3bucket
 
@@ -14,6 +16,7 @@ TOKEN = os.getenv ('TELEGRAM_TOKEN')
 API_ID = os.getenv ('API_ID')
 API_HASH = os.getenv ('API_HASH')
 MIME_TYPES = json.loads(os.getenv('MIME_TYPES'))
+TABLE_CHAT=os.getenv('TABLE_CHAT')
 
 async def help_commands(FullMessage,sender,client):
 	message = "Todos los comandos llevan una / delante " + '\n'
@@ -58,10 +61,10 @@ async def which_channel_iam(FullMessage,sender,client):
 
 async def part_channel(FullMessage,sender,client):
 	async for dialog in client.iter_dialogs () :
-		if dialog.id == chat_id :
-			print (chat_id)
-			await client.delete_dialog (chat_id)
-	print(f'{channel[1]} has been leaved')
+		if dialog.is_channel :
+			print (dialog.entity)
+			await client.delete_dialog (dialog.entity)
+	print(f'{dialog.entity} has been leaved')
 
 async def info_channel(FullMessage,sender,client):
 	message = FullMessage.message.split ()
@@ -70,6 +73,7 @@ async def info_channel(FullMessage,sender,client):
 	await client.send_message (sender, channel.stringify ())
 
 async def get_data_from_dinamo(FullMessage,sender,client):
+	dyn = blabdynamo(TABLE_CHAT)
 	answer = ''
 	message = FullMessage.message.split ()
 	patternkey = message[1]
@@ -80,9 +84,10 @@ async def get_data_from_dinamo(FullMessage,sender,client):
 		if element['media'] :
 			answer += " - " + element['media']['webpage']['url']
 		answer += "\n"
-	await client.send_message (sendr, answer)
+	await client.send_message (sender, answer)
 
 async def process_link_in_dynamo(FullMessage,sender,client):
+	dyn = blabdynamo(TABLE_CHAT)
 	url = ''
 	pattern = dyn.scan ('message', 'https')
 	for element in pattern :
@@ -98,6 +103,13 @@ async def list_all_files_in_s3(FullMessage,sender,client):
 	filesdata = data.get_all_list_files()
 	for filesx in filesdata:
 		await client.send_message (sender, filesx)
+
+async def file_info_hash(FullMessage,sender,client):
+	message = FullMessage.message.split ()
+	filehash = message[1]
+	dialog_total = inform_file(filehash)
+	await client.send_message (sender, dialog_total)
+
 
 async def getmedia_from_chan(FullMessage,sender,client):
 	message = FullMessage.message.split ()
@@ -115,10 +127,13 @@ async def getmedia_from_chan(FullMessage,sender,client):
 						if tipos in message.file.mime_type :
 							fileinfo = str (message.file.name) + " - " + str (message.file.mime_type) + " - " + str (
 								message.file.size) + ' in bytes'
-							await client.send_message (sender, fileinfo)
-							await client.send_message (sender, 'Analyzing....')
-							path = await client.download_media (message.media, "../tmp")
-							file_info = analyze_and_upload (path)
-							await client.send_message (sender, 'analyzed and uploaded to S3')
-							await client.send_message(sender,'hash: ' + str(file_info))
-							await client.send_message (sender, 'Virustotal link: '+ 'https://www.virustotal.com/gui/file/' + str (file_info))
+							if message.file.size > 324179621:
+								await client.send_message (sender, 'File too big to analyze')
+							else:
+								await client.send_message (sender, fileinfo)
+								await client.send_message (sender, 'Analyzing....')
+								path = await client.download_media (message.media, "../tmp")
+								file_info = analyze_and_upload (path)
+								await client.send_message (sender, 'analyzed and uploaded to S3')
+								await client.send_message(sender,'hash: ' + str(file_info))
+								await client.send_message (sender, 'Virustotal link: '+ 'https://www.virustotal.com/gui/file/' + str (file_info))
