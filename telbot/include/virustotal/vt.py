@@ -12,8 +12,10 @@ vt = virustotal3.core.Files (API_KEY)
 
 
 def inform_file(filehash) :
-	hash = vt.info_file (filehash, timeout=30)
-	return hash
+	hashinfo = 'https://www.virustotal.com/gui/file/' + str(filehash) +'\n'
+	hashinfo += 'https://www.joesandbox.com/search?q=' + str(filehash) +'\n'
+	hashinfo += 'https://virusscan.jotti.org/es-ES/search/hash/' + str(filehash) +'\n'
+	return hashinfo
 
 class vtotal (object) :
 	def __init__(self, filename) :

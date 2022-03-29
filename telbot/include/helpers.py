@@ -40,7 +40,7 @@ def log_to_dynamo(data,user):
     return chan_dict
 
 
-def create_dict_dynamo(data) :
+def create_dict_dynamo(data,channel) :
     js = data
     meaningful_name = "" if not 'meaningful_name' in js['data']['attributes'] else str (js['data']['attributes']['meaningful_name'])
     sha256 = str (js['data']['attributes']['sha256']) if not 'meta' in js else str (
@@ -71,6 +71,7 @@ def create_dict_dynamo(data) :
         'last_analysis_date' : last_analysis_date,
         'unique_sources' : unique_sources,
         'meaningful_name' : meaningful_name,
+        'channel': str(channel),
     }
     prev = {}
     if 'last_analysis_results' in js['data']['attributes'] :
@@ -85,13 +86,13 @@ def create_dict_dynamo(data) :
             res_dict.update (prev)
     return res_dict
 
-def analyze_and_upload(filename):
+def analyze_and_upload(filename,channel):
     dyn = blabdynamo(TABLE_RESULT)
     data = vtotal(filename)
     infofile = data.get_hash_info()
     s3_datos = s3bucket()
     s3_datos.upload_file(filename)
-    dict_dyn = create_dict_dynamo(infofile)
+    dict_dyn = create_dict_dynamo(infofile,channel)
     dyn.save(dict_dyn)
     return data.hash
 

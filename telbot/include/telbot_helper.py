@@ -21,14 +21,14 @@ TABLE_CHAT=os.getenv('TABLE_CHAT')
 async def help_commands(FullMessage,sender,client):
 	message = "Todos los comandos llevan una / delante " + '\n'
 	comandos = '/infouser + user - Imprime informacion sobre el usuario' + '\n'
-	comandos += '/whichchan - Informacion de los canales monitorizados' + '\n'
+	comandos += '/whichchan - Informacion de los canales monitorizados - Canal - nick_canal' + '\n'
 	comandos += '/joinpriv + url_del_canal - Accede al canal' + '\n'
 	comandos += '/part - Abandona el canal actual'+ '\n'
-	comandos += '/getmedia canal cantidad - Descarga , analiza y sube al S3 bucket los archivos del canal' + '\n'
+	comandos += '/getmedia nick_canal cantidad - Descarga , analiza y sube al S3 bucket los archivos del canal' + '\n'
 	comandos += '/inforchan canal - '+ '\n'
 	comandos += '/getdb cadena - Busca en la base de datos de conversaciones la/s palabra/s en cadena' + '\n'
-	comandos += 'processLink' + '\n'
-	comandos +='allfiles'+ '\n'
+	comandos += '/processLink - Busca enlaces en las conversaciones guardadas' + '\n'
+	comandos += '/allfiles - lista todos los archivos encontrados en los canales.'+ '\n'
 	comand = message + comandos
 	await client.send_message (sender, comand)
 
@@ -95,7 +95,7 @@ async def process_link_in_dynamo(FullMessage,sender,client):
 			if element['media']['webpage']['url'] :
 				url += element['media']['webpage']['url']
 				url += "\n"
-	await client.send_message (sender, url)
+			await client.send_message (sender, url)
 
 async def list_all_files_in_s3(FullMessage,sender,client):
 	message = FullMessage.message.split ()
@@ -107,6 +107,7 @@ async def list_all_files_in_s3(FullMessage,sender,client):
 async def file_info_hash(FullMessage,sender,client):
 	message = FullMessage.message.split ()
 	filehash = message[1]
+	print(filehash)
 	dialog_total = inform_file(filehash)
 	await client.send_message (sender, dialog_total)
 
@@ -133,7 +134,7 @@ async def getmedia_from_chan(FullMessage,sender,client):
 								await client.send_message (sender, fileinfo)
 								await client.send_message (sender, 'Analyzing....')
 								path = await client.download_media (message.media, "../tmp")
-								file_info = analyze_and_upload (path)
+								file_info = analyze_and_upload (path,channame)
 								await client.send_message (sender, 'analyzed and uploaded to S3')
 								await client.send_message(sender,'hash: ' + str(file_info))
 								await client.send_message (sender, 'Virustotal link: '+ 'https://www.virustotal.com/gui/file/' + str (file_info))

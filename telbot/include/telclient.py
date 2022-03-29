@@ -52,7 +52,6 @@ class telclient () :
 		if isinstance (FullMessage.peer_id, (types.PeerChannel, types.PeerChat)) :
 			channel = FullMessage.peer_id
 			fullchan = await client.get_entity (channel)
-			print(FullMessage)
 			dyn.save (channel_to_dynamo (FullMessage, fullchan.title, fullsender.username))
 			if FullMessage.mentioned :
 				await client.send_message (channel, "I am away.Let your message, when listen 'Beep'")

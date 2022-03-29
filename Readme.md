@@ -36,3 +36,4 @@ S3 to download the data and MySQL to storage the data.
 * v0.22 - code cleanup
 * v0.23 - improve virustotal integration
 * v0.24 - json to dynamoDB. Cleanup code
+* v0.25 - Clean up code.
