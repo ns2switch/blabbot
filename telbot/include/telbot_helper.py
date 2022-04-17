@@ -37,7 +37,7 @@ async def infouser_function(FullMessage, sender, client):
 	user = message[1]
 	full = await client (GetFullUserRequest (user))
 	bio = full
-	print (bio)
+	await client.send_message (sender, bio.stringify ())
 
 async def join_priv_channel(FullMessage, sender, client):
 	message = FullMessage.message.split ()

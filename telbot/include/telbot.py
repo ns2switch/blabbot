@@ -48,12 +48,12 @@ class botcommand :
 			await which_channel_iam(FullMessage,sender,client)
 
 		elif '/infochan' in FullMessage.message :
-			await infouser_function(FullMessage,sender,client)
+			await info_channel(FullMessage,sender,client)
 
 		elif '/getdb' in FullMessage.message :
 			await get_data_from_dinamo(FullMessage,sender,client)
 
-		elif '/processlink' in FullMessage.message :
+		elif '/processLink' in FullMessage.message :
 			await process_link_in_dynamo(FullMessage,sender,client)
 
 		elif '/allfiles' in FullMessage.message :
